@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YAP! — one link, one bestie, zero chill</title>
+<meta name="description" content="The loudest little chat on the internet. One magic link, two legends, unlimited nonsense — live across phones.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#141312;--paper:#FFFDF4;--yellow:#FFD400;--pink:#FF2E88;--cyan:#12D6E8;--lime:#A6F200;--orange:#FF7A1A}
+body{font-family:'Space Grotesk',sans-serif;color:var(--ink);background:radial-gradient(#14131214 1.5px,transparent 1.6px) 0 0/22px 22px,var(--yellow);min-height:100vh}
+body.in-chat{overflow:hidden}
+::selection{background:var(--pink);color:#fff}
+[hidden]{display:none!important}
+b{font-weight:700}
+.view{position:relative;z-index:1}
+.doodle{position:fixed;z-index:0;pointer-events:none;opacity:.55;animation:floaty var(--d,6s) ease-in-out var(--dl,0s) infinite alternate;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.18))}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-9deg)}to{transform:translateY(16px) rotate(10deg)}}
+.marquee{background:var(--ink);color:var(--yellow);overflow:hidden;height:40px;position:relative;z-index:2}
+.marquee.rev{background:var(--pink);color:var(--ink);border-top:4px solid var(--ink)}
+.m-track{display:flex;width:max-content;animation:mscroll 24s linear infinite;font-family:'Shrikhand';font-size:.95rem;line-height:40px;letter-spacing:.05em}
+.marquee.rev .m-track{animation-direction:reverse}
+.m-track span{padding:0 1.1rem;white-space:nowrap}
+@keyframes mscroll{to{transform:translateX(-50%)}}
+.card{background:var(--paper);border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);border-radius:20px 6px 20px 6px}
+.btn{font-family:'Shrikhand';font-size:1rem;color:var(--ink);background:var(--pink);border:3px solid var(--ink);border-radius:14px 5px 14px 5px;padding:.6em 1.1em;box-shadow:5px 5px 0 var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.45em;transition:transform .12s,box-shadow .12s;user-select:none;white-space:nowrap}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn-cyan{background:var(--cyan)}.btn-lime{background:var(--lime)}.btn-orange{background:var(--orange)}
+.btn.sm{font-size:.75rem;padding:.5em .8em;box-shadow:4px 4px 0 var(--ink)}
+.icon-btn{width:46px;height:46px;font-size:1.25rem;background:#fff;border:3px solid var(--ink);border-radius:12px 4px 12px 4px;box-shadow:4px 4px 0 var(--ink);cursor:pointer;display:grid;place-items:center;transition:transform .12s;flex:none}
+.icon-btn:hover{transform:translate(-2px,-2px) rotate(-6deg);box-shadow:6px 6px 0 var(--ink)}
+.fine{font-size:.75rem;font-weight:500;opacity:.75;line-height:1.5}
+input[type=text]{font-family:'Space Grotesk';font-weight:700;font-size:1.05rem;padding:.75em 1em;border:3px solid var(--ink);border-radius:12px 4px 12px 4px;background:#fff;width:100%}
+input[type=text]:focus{outline:none;box-shadow:4px 4px 0 var(--cyan)}
+.sticker{font-family:'Shrikhand';font-size:.85rem;border:3px solid var(--ink);padding:.25em .7em;box-shadow:4px 4px 0 var(--ink);display:inline-block}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:2.6rem;max-width:1180px;margin:0 auto;padding:3.2rem 1.5rem 3rem;align-items:start}
+.badge-row{display:flex;gap:.9rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.s1{background:var(--lime);transform:rotate(-4deg)}.s2{background:var(--cyan);transform:rotate(3deg)}
+.logo-big{font-family:'Shrikhand';font-size:clamp(4rem,11vw,8.5rem);line-height:.95;color:var(--paper);text-shadow:5px 5px 0 var(--pink),10px 10px 0 var(--ink);transform:rotate(-2deg);animation:wob 3.4s ease-in-out infinite}
+.logo-big .bang{color:var(--cyan)}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(1.2deg) translateY(-4px)}}
+.tag{max-width:46ch;font-size:1.08rem;font-weight:500;margin:1.3rem 0 1.8rem;line-height:1.55}
+.name-card{padding:1.6rem 1.7rem;transform:rotate(-1deg);max-width:520px}
+.name-card label{font-family:'Shrikhand';font-size:1.15rem;display:block;margin-bottom:.8rem}
+.inp-row{display:flex;gap:.8rem;flex-wrap:wrap}
+.inp-row input{flex:1;min-width:200px}
+.name-card .fine{margin-top:.9rem}
+.hero-right{display:flex;flex-direction:column;gap:1.4rem}
+.preview{overflow:hidden;transform:rotate(1.5deg)}
+.pv-head{background:var(--ink);color:var(--paper);font-family:'Shrikhand';font-size:.85rem;padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem}
+.pv-dot{width:9px;height:9px;border-radius:50%;background:var(--lime);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.pv-live{margin-left:auto;color:var(--pink);font-size:.7rem}
+.pv-body{padding:1.1rem;display:flex;flex-direction:column;gap:.6rem;min-height:230px;background:radial-gradient(#14131210 1.3px,transparent 1.4px) 0 0/18px 18px,#FDF3DC}
+.pv-bub{border:3px solid var(--ink);padding:.5rem .85rem;font-weight:600;font-size:.9rem;width:max-content;max-width:80%;box-shadow:3px 3px 0 var(--ink);opacity:0;animation:pvpop 7s infinite}
+.pv-bub.them{background:#fff;border-radius:14px 14px 14px 3px;align-self:flex-start}
+.pv-bub.me{background:var(--pink);color:#fff;border-radius:14px 14px 3px 14px;align-self:flex-end}
+.pv-typing{align-self:flex-start;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:.55rem .8rem;display:flex;gap:4px;opacity:0;animation:pvpop 7s infinite}
+.pv-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink);animation:tb 1s infinite}
+.pv-typing i:nth-child(2){animation-delay:.15s}.pv-typing i:nth-child(3){animation-delay:.3s}
+.a1{animation-delay:.4s}.a2{animation-delay:1.5s}.a3{animation-delay:2.6s}.a4{animation-delay:3.7s}.a5{animation-delay:4.9s}
+@keyframes pvpop{0%{opacity:0;transform:scale(.6) rotate(-3deg)}7%{opacity:1;transform:none}86%{opacity:1}94%,100%{opacity:0}}
+@keyframes tb{40%{transform:translateY(-5px)}}
+.notes{display:grid;gap:1.1rem}
+.note{position:relative;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:1.1rem 1.2rem;font-weight:600;font-size:.95rem;line-height:1.45}
+.note::before{content:'';position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-3deg);width:76px;height:24px;background:#ffffff99;border:1px solid #00000022}
+.note b{font-family:'Shrikhand';display:block;font-size:.85rem;margin-bottom:.25rem}
+.n1{background:#FFF6A6;transform:rotate(-2deg)}.n2{background:#D8F7FF;transform:rotate(1.5deg)}.n3{background:#FFE1EE;transform:rotate(-1deg)}
+.landing-foot{max-width:1180px;margin:0 auto;padding:0 1.5rem 2.5rem;text-align:center}
+.ticket-wrap{min-height:calc(100vh - 40px);display:grid;place-items:center;padding:2rem 1rem}
+.ticket{max-width:660px;width:100%;padding:2.2rem 2rem;text-align:center;transform:rotate(-1deg)}
+.t-head{font-family:'Shrikhand';font-size:1.35rem}
+.t-room{font-family:'Shrikhand';font-size:clamp(2.6rem,8vw,4rem);color:var(--pink);text-shadow:3px 3px 0 var(--ink);margin:.4rem 0 .2rem;letter-spacing:.06em}
+input.t-link{width:100%;font-weight:700;background:#fff;border:3px dashed var(--ink);border-radius:10px;padding:.85rem;font-size:.9rem;font-family:'Space Grotesk';text-align:center;margin:1.1rem 0;cursor:text}
+input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
+.t-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.2rem}
+.ticket .fine{max-width:46ch;margin:0 auto}
+.deploy-panel{margin:0 0 1.1rem;text-align:left}
+.deploy-panel code{background:#14131214;padding:.05em .35em;border-radius:5px;font-size:.85em;font-weight:700}
+.warn{background:#FFE7D6;border:3px solid var(--orange);box-shadow:5px 5px 0 var(--ink);border-radius:14px 4px 14px 4px;padding:.85rem 1rem;font-weight:600;font-size:.85rem;line-height:1.55;margin-bottom:.8rem}
+#manual-base{margin-top:.2rem}
+#t-status{margin-top:.5rem;font-weight:700;font-size:.8rem}
+.who-wrap{min-height:calc(100vh - 40px);display:grid;place-items:center;padding:2rem 1rem}
+.who-card{max-width:520px;width:100%;padding:2.4rem 2rem;text-align:center;transform:rotate(1deg)}
+.who-emoji{font-size:4.2rem;animation:wob 2.2s ease-in-out infinite;display:inline-block}
+.who-title{font-family:'Shrikhand';font-size:clamp(1.4rem,4.5vw,1.9rem);margin:.6rem 0 .5rem;line-height:1.25}
+.who-title span{color:var(--pink);text-shadow:2px 2px 0 var(--ink)}
+#who-host{font-weight:600;margin-bottom:1.4rem}
+#form-who{display:grid;gap:.8rem}
+#form-who label{font-family:'Shrikhand';font-size:1.1rem}
+.who-card .fine{margin-top:1.1rem}
+#view-chat{height:calc(100vh - 40px);display:flex;flex-direction:column}
+.chat-head{background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:.6rem;padding:.55rem .9rem;flex-wrap:wrap;border-bottom:4px solid var(--ink)}
+.ch-logo{font-family:'Shrikhand';color:var(--yellow);font-size:1.25rem;text-shadow:2px 2px 0 var(--pink);animation:wob 3s infinite;display:inline-block}
+.ch-room{font-family:'Shrikhand';font-size:.8rem;background:var(--yellow);color:var(--ink);padding:.25em .8em;border-radius:999px;letter-spacing:.06em;cursor:pointer;border:2px solid var(--paper)}
+.ch-net{font-size:.68rem;font-weight:700;background:var(--lime);color:var(--ink);padding:.3em .7em;border-radius:999px;border:2px solid var(--paper);letter-spacing:.03em;cursor:default}
+.ch-net.off{background:var(--orange)}
+.ch-net.polling{background:var(--cyan)}
+.ch-people{font-size:.74rem;font-weight:700;opacity:.85}
+.ch-right{margin-left:auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.btn.armed{background:var(--ink);color:var(--orange);border-color:var(--orange);animation:shake .3s infinite}
+@keyframes shake{25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+.msgs{flex:1;overflow-y:auto;padding:1.1rem 1rem 1.4rem;display:flex;flex-direction:column;background:radial-gradient(#14131210 1.4px,transparent 1.5px) 0 0/20px 20px,#FDF3DC}
+.msgs::-webkit-scrollbar{width:12px}
+.msgs::-webkit-scrollbar-thumb{background:var(--ink);border:3px solid #FDF3DC;border-radius:99px}
+.empty{margin:auto;text-align:center;padding:2rem}
+.empty .big{font-size:4.2rem;display:inline-block;animation:wob 2s infinite}
+.empty h3{font-family:'Shrikhand';font-size:1.7rem;margin:.6rem 0 .3rem}
+.empty p{font-weight:600;opacity:.7;max-width:34ch}
+.day{align-self:center;font-family:'Shrikhand';font-size:.68rem;background:var(--ink);color:var(--yellow);padding:.3rem 1rem;border-radius:999px;margin:1rem 0 .5rem;transform:rotate(-1deg);letter-spacing:.07em}
+.msg{display:flex;flex-direction:column;margin:.3rem 0;animation:mpop .3s cubic-bezier(.2,1.5,.4,1)}
+.msg.me{align-items:flex-end}.msg.them{align-items:flex-start}
+@keyframes mpop{from{opacity:0;transform:translateY(14px) scale(.75)}to{opacity:1;transform:none}}
+.bub{max-width:min(74%,540px);padding:.65rem .95rem;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-weight:500;font-size:.98rem;line-height:1.4;word-break:break-word;white-space:pre-wrap;transform:rotate(var(--r,0deg));transition:transform .15s}
+.msg:hover .bub{transform:rotate(0deg) scale(1.02)}
+.me .bub{background:var(--pink);color:#fff;border-radius:17px 17px 4px 17px}
+.them .bub{background:#fff;border-radius:17px 17px 17px 4px}
+.who-name{display:block;font-family:'Shrikhand';font-size:.7rem;color:var(--orange);margin-bottom:.15rem}
+.meta{font-size:.64rem;font-weight:700;opacity:.6;margin-top:.25rem}
+.bub a{color:inherit;font-weight:700}
+.pic{max-width:min(260px,100%);border:3px solid var(--ink);border-radius:10px;display:block;cursor:zoom-in;margin:.15rem 0}
+.typing{height:32px;display:flex;align-items:center;gap:.5rem;padding:0 1.1rem;font-size:.78rem;font-weight:700;opacity:0;transition:opacity .2s;background:#FDF3DC}
+.typing.on{opacity:1}
+.t-dots{display:inline-flex;gap:3px}
+.t-dots i{width:6px;height:6px;border-radius:50%;background:var(--ink);animation:tb 1s infinite}
+.t-dots i:nth-child(2){animation-delay:.15s}.t-dots i:nth-child(3){animation-delay:.3s}
+.composer{background:var(--paper);border-top:4px solid var(--ink)}
+.emoji-row{display:flex;gap:.15rem;overflow-x:auto;padding:.4rem .7rem 0;scrollbar-width:none}
+.emoji-row::-webkit-scrollbar{display:none}
+.emoji-row button{font-size:1.3rem;background:none;border:none;cursor:pointer;padding:.1rem .25rem;transition:transform .12s;flex:none}
+.emoji-row button:hover{transform:scale(1.4) rotate(-10deg)}
+.c-row{display:flex;gap:.55rem;padding:.55rem .7rem .8rem;align-items:center}
+#inp-msg{flex:1}
+.send{font-size:1.05rem}
+.send.ready{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.06) rotate(-1.5deg)}}
+.pop-em{position:fixed;z-index:99;pointer-events:none;font-size:22px;animation:fly .85s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rr));opacity:0}}
+#lightbox{position:fixed;top:0;left:0;right:0;bottom:0;background:#141312e8;z-index:100;display:grid;place-items:center;cursor:zoom-out}
+#lightbox img{max-width:92vw;max-height:90vh;border:4px solid var(--paper);border-radius:8px;box-shadow:10px 10px 0 #000}
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
+.toast{background:var(--ink);color:var(--yellow);font-family:'Shrikhand';font-size:.82rem;padding:.6em 1.3em;border-radius:999px;border:3px solid var(--yellow);animation:tin .25s cubic-bezier(.2,1.5,.4,1);white-space:nowrap;max-width:92vw}
+@keyframes tin{from{opacity:0;transform:translateY(20px) scale(.7)}}
+@media(max-width:920px){.hero{grid-template-columns:1fr;gap:2rem;padding-top:2.2rem}.bub{max-width:86%}}
+</style>
+</head>
+<body>
+
+<div class="marquee" aria-hidden="true"><div class="m-track" id="mtrack"></div></div>
+
+<section id="view-landing" class="view">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="badge-row">
+        <span class="sticker s1">NO ACCOUNTS ??</span>
+        <span class="sticker s2">1 LINK = 1 BESTIE ??</span>
+      </div>
+      <h1 class="logo-big">YAP<span class="bang">!</span></h1>
+      <p class="tag">The loudest little chat on the internet. One magic link, two legends, unlimited nonsense — pics and all, <b>live across phones</b>. The link remembers your friend. Forever.</p>
+      <form class="card name-card" onsubmit="gimmeLink();return false;">
+        <label for="inp-name">What's your name, legend?</label>
+        <div class="inp-row">
+          <input type="text" id="inp-name" maxlength="18" placeholder="e.g. Priya ??" autocomplete="off">
+          <button type="submit" class="btn">GIMME MY LINK ?</button>
+        </div>
+        <p class="fine">60 seconds to your own private chat room. No email. No OTP. No drama.</p>
+      </form>
+    </div>
+    <div class="hero-right">
+      <div class="preview card" aria-hidden="true">
+        <div class="pv-head"><span class="pv-dot"></span> priya ? arjun <span class="pv-live">? LIVE</span></div>
+        <div class="pv-body">
+          <div class="pv-bub them a1">bro look at this cat ??</div>
+          <div class="pv-bub me a2">NO WAY HAHAHA ??</div>
+          <div class="pv-bub them a3">?? suspicious_cat.jpg</div>
+          <div class="pv-bub me a4">sending this to the group immediately</div>
+          <div class="pv-typing a5"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note n1"><b>STEP 1 — DEPLOY</b> Upload this single file to Render.</div>
+        <div class="note n2"><b>STEP 2 — CLAIM IT</b> Open the link, type your name ? get your personal link.</div>
+        <div class="note n3"><b>STEP 3 — YAP FOREVER</b> Send it to one friend. They type their name once; the link remembers them.</div>
+      </div>
+    </div>
+  </div>
+  <div class="landing-foot">
+    <p class="fine">Messages ride a free public relay — no accounts, no keys. The link is the room: same link = same conversation, on any device.</p>
+  </div>
+</section>
+
+<section id="view-ticket" class="view" hidden>
+  <div class="ticket-wrap">
+    <div class="ticket card">
+      <div class="t-head">??? YOUR GOLDEN TICKET</div>
+      <div class="t-room" id="t-room">#------</div>
+      <input class="t-link" id="t-link" readonly value="" placeholder="your shareable link appears here…" onclick="this.select()">
+      <div class="t-actions">
+        <button type="button" class="btn" onclick="copyLink()">?? COPY LINK</button>
+        <a class="btn btn-lime" id="btn-wa" target="_blank" rel="noopener">?? WHATSAPP IT</a>
+        <button type="button" class="btn btn-cyan" onclick="enterChat()">ENTER THE CHAT ?</button>
+      </div>
+      <p class="fine">Send this exact link to <b>one friend</b>. They type their name <b>once</b> — the link remembers them forever.</p>
+    </div>
+  </div>
+</section>
+
+<section id="view-who" class="view" hidden>
+  <div class="who-wrap">
+    <div class="who-card card">
+      <span class="who-emoji">??</span>
+      <h2 class="who-title">You've been summoned to<br><span id="who-room">#------</span></h2>
+      <p id="who-host">Someone opened this yap room just for you.</p>
+      <form id="form-who" onsubmit="whoSubmit();return false;">
+        <label for="inp-who">ok but… who dis?</label>
+        <input type="text" id="inp-who" maxlength="18" placeholder="type your name…" autocomplete="off">
+        <button type="submit" class="btn">LET ME IN ?</button>
+      </form>
+      <p class="fine">One time only. This link will remember you — next visit you walk straight in. ??</p>
+    </div>
+  </div>
+</section>
+
+<section id="view-chat" class="view" hidden>
+  <header class="chat-head">
+    <span class="ch-logo">YAP!</span>
+    <span class="ch-room" id="ch-room" onclick="copyLink()" title="click to copy link">#------</span>
+    <span class="ch-net off" id="ch-net">?? CONNECTING…</span>
+    <span class="ch-people" id="ch-people">?? just you — send the link!</span>
+    <div class="ch-right">
+      <button type="button" class="btn sm" onclick="copyLink()">?? COPY LINK</button>
+      <button type="button" class="btn btn-cyan sm" onclick="newRoom()">+ NEW ROOM</button>
+      <button type="button" class="btn btn-orange sm" id="btn-burn" onclick="burnClick(this)">?? BURN</button>
+    </div>
+  </header>
+  <main class="msgs" id="msgs"></main>
+  <div class="typing" id="typing"><span class="t-dots"><i></i><i></i><i></i></span> <b id="typing-name"></b> is typing…</div>
+  <footer class="composer">
+    <div class="emoji-row">
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">??</button>
+    </div>
+    <div class="c-row">
+      <button type="button" class="icon-btn" onclick="imgClick()" title="send a pic">???</button>
+      <input type="text" id="inp-msg" placeholder="type some chaos…" autocomplete="off" maxlength="2000"
+        oninput="onType()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){sendClick();event.preventDefault();}">
+      <button type="button" class="btn send" id="btn-send" onclick="sendClick()">SEND ?</button>
+    </div>
+  </footer>
+</section>
+
+<div class="marquee rev" aria-hidden="true"><div class="m-track" id="mtrack2"></div></div>
+<div id="lightbox" hidden onclick="this.hidden=true"><img alt="full size pic"></div>
+<div id="toasts"></div>
+<input type="file" id="filePick" hidden accept="image/*" onchange="onFileChange()">
+
+<script>
+var room = null, hostParam = null, me = null, msgs = [], manualBase = '';
+var channel = null, audioCtx = null, typingTimer = null;
+var channelSetup = false, burnArmed = false, burnT = null;
+var peers = new Map(), greeted = new Set();
+var topic = null;
+var RELAYS = ['https://ntfy.sh/', 'https://ntfy.envs.net/'];
+var relayIdx = 0;
+var MAXBODY = 380000, CHUNK = 3800, chunkBuf = {};
+var lastPollSinceTs = 0, pollTimer = null, sseOk = false;
+var POLL_INTERVAL_SSE_UP = 15000, POLL_INTERVAL_SSE_DOWN = 5000;
+
+function $(id){ return document.getElementById(id); }
+function kill(el){ if(el && el.parentNode) el.parentNode.removeChild(el); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmt(s){ return esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function rid(){ var a = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', o = ''; for(var i = 0; i < 6; i++) o += a[Math.floor(Math.random() * a.length)]; return o; }
+function rot(id){ var h=0; for(var i=0;i<id.length;i++) h+=id.charCodeAt(i); return ((h%25)-12)/10; }
+function caret(el){ return el.selectionStart == null ? el.value.length : el.selectionStart; }
+function caretEnd(el){ return el.selectionEnd == null ? caret(el) : el.selectionEnd; }
+function isHttp(){ var p = location.protocol; return p === 'http:' || p === 'https:'; }
+function nowSec(){ return Math.floor(Date.now() / 1000); }
+
+function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function storeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function ensurePID(){ var p = storeGet('yap:pid:' + room); if(!p){ p = uid(); storeSet('yap:pid:' + room, p); } return p; }
+function loadMsgs(){ try{ return JSON.parse(storeGet('yap:msgs:' + room) || '[]'); }catch(e){ return []; } }
+function saveMsgs(){ try{ localStorage.setItem('yap:msgs:' + room, JSON.stringify(msgs)); } catch(e){ toast('STORAGE FULL — HIT BURN ??'); } }
+function ensureTopic(){ if(room && !topic) topic = 'yap-' + room.toLowerCase() + '-v2'; }
+
+function currentBase(){
+  if(isHttp()) return location.href.split(/[?#]/)[0];
+  var m = (manualBase || '').trim();
+  if(!m) return null;
+  if(!/^https?:\/\//i.test(m)) m = 'https://' + m;
+  if(!/^https?:\/\/[a-z0-9.-]+\.[a-z]{2,}/i.test(m)) return null;
+  return m.split(/[?#]/)[0];
+}
+function buildShareLink(){
+  var base = currentBase(); if(!base || !room) return null;
+  return base + '?room=' + room + (me ? '&host=' + encodeURIComponent(me.name) : '');
+}
+function refreshTicketLink(){
+  var link = $('t-link'), wa = $('btn-wa');
+  var full = buildShareLink();
+  if(full){
+    link.value = full;
+    if(wa){ wa.href = 'https://wa.me/?text=' + encodeURIComponent('Join my YAP! room: ' + full); wa.style.display = ''; }
+  } else {
+    link.value = '';
+    if(wa) wa.style.display = 'none';
+  }
+}
+function onManualBase(){ manualBase = $('manual-base').value.trim(); storeSet('yap:manualBase', manualBase); refreshTicketLink(); }
+
+function showView(v){
+  ['landing','ticket','who','chat'].forEach(function(n){
+    var el = $('view-' + n); if(el) el.hidden = (n !== v);
+  });
+  document.body.classList.toggle('in-chat', v === 'chat');
+}
+function toast(t){
+  var el = document.createElement('div'); el.className = 'toast'; el.textContent = t;
+  $('toasts').appendChild(el); setTimeout(function(){ kill(el); }, 2800);
+}
+function blip(f){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime;
+    o.type = 'triangle'; o.frequency.setValueAtTime(f || 440, t);
+    g.gain.setValueAtTime(.1, t); g.gain.exponentialRampToValueAtTime(.001, t + .15);
+    o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t + .16);
+  }catch(e){}
+}
+function burst(x, y){
+  var em = ['??','?','??','??','?','??','??'];
+  for(var i = 0; i < 8; i++){
+    var s = document.createElement('span'); s.className = 'pop-em';
+    s.textContent = em[Math.floor(Math.random() * em.length)];
+    s.style.left = x + 'px'; s.style.top = y + 'px';
+    s.style.setProperty('--dx', (Math.random() * 180 - 90) + 'px');
+    s.style.setProperty('--dy', (-50 - Math.random() * 120) + 'px');
+    s.style.setProperty('--rr', (Math.random() * 240 - 120) + 'deg');
+    document.body.appendChild(s);
+    setTimeout(function(el){ return function(){ kill(el); }; }(s), 900);
+  }
+}
+
+function sendRaw(body, attempt){
+  if(!window.fetch){ return Promise.resolve(); }
+  attempt = attempt || 0;
+  if(attempt >= RELAYS.length){ return Promise.resolve(); }
+  var url = RELAYS[(relayIdx + attempt) % RELAYS.length] + topic;
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: body
+  }).then(function(r){
+    if(r.status === 429 || r.status >= 500){ return sendRaw(body, attempt + 1); }
+    if(!r.ok) throw new Error('http ' + r.status);
+    relayIdx = (relayIdx + attempt) % RELAYS.length;
+  }).catch(function(){ return sendRaw(body, attempt + 1); });
+}
+
+function publishObj(obj, done){
+  ensureTopic(); if(!topic){ if(done) done(); return; }
+  obj.ts = obj.ts || Date.now();
+  var body = JSON.stringify(obj);
+  if(body.length <= CHUNK){ sendRaw(body).then(function(){ if(done) done(); }); return; }
+  var cid = uid(), n = Math.ceil(body.length / CHUNK), i = 0;
+  (function next(){
+    if(i >= n){ if(done) done(); return; }
+    var env = JSON.stringify({ t:'chunk', cid:cid, i:i, n:n, d:body.substr(i * CHUNK, CHUNK) });
+    sendRaw(env).then(function(){ i++; setTimeout(next, 120); });
+  })();
+}
+
+function onChunk(c){
+  var b = chunkBuf[c.cid];
+  if(!b){ b = chunkBuf[c.cid] = { parts:{}, n:c.n, got:0, born:Date.now() }; }
+  if(!(c.i in b.parts)){ b.parts[c.i] = c.d; b.got++; }
+  if(b.got === b.n){
+    var body = ''; for(var i = 0; i < b.n; i++) body += (b.parts[i] || '');
+    delete chunkBuf[c.cid];
+    var obj; try{ obj = JSON.parse(body); }catch(e){ return; }
+    handle(obj, false);
+  }
+}
+setInterval(function(){
+  var now = Date.now();
+  for(var k in chunkBuf) if(now - chunkBuf[k].born > 30000) delete chunkBuf[k];
+}, 10000);
+
+function setLiveStatus(state){
+  var el = $('ch-net'); if(!el) return;
+  sseOk = (state === 'live');
+  if(state === 'live'){ el.textContent = '?? LIVE'; el.className = 'ch-net'; }
+  else if(state === 'polling'){ el.textContent = '?? POLLING'; el.className = 'ch-net polling'; }
+  else { el.textContent = '?? OFFLINE'; el.className = 'ch-net off'; }
+  resetPollTimer();
+}
+
+function subscribe(){
+  ensureTopic();
+  if(!topic || !window.EventSource){ setLiveStatus('off'); return; }
+  var delay = 1500;
+  function connect(){
+    var url = RELAYS[0] + topic + '/sse';
+    var es;
+    try{ es = new EventSource(url); }
+    catch(e){ setLiveStatus('off'); setTimeout(connect, delay); delay = Math.min(delay*2, 30000); return; }
+    es.onopen = function(){ setLiveStatus('live'); delay = 1500; };
+    es.onerror = function(){ setLiveStatus('polling'); es.close(); setTimeout(connect, delay); delay = Math.min(delay * 2, 30000); };
+    es.onmessage = function(ev){
+      var env; try{ env = JSON.parse(ev.data); }catch(e){ return; }
+      if(env.event !== 'message' || !env.message) return;
+      var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
+      handle(obj, false);
+    };
+  }
+  connect();
+}
+
+function catchUp(sinceTs){
+  ensureTopic(); if(!topic || !window.fetch) return;
+  var since = (sinceTs && sinceTs > 0) ? sinceTs : '12h';
+  var pollTimestamp = nowSec();
+  function tryRelay(idx){
+    if(idx >= RELAYS.length) return;
+    var url = RELAYS[idx] + topic + '/json?poll=1&since=' + since;
+    fetch(url, { headers:{ 'Accept':'application/x-ndjson' } })
+      .then(function(r){ return r.text(); })
+      .then(function(text){
+        if(!text.trim()){ return; }
+        var added = false;
+        text.split('\n').forEach(function(line){
+          if(!line.trim()) return;
+          var env; try{ env = JSON.parse(line); }catch(e){ return; }
+          if(env.event !== 'message' || !env.message) return;
+          var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
+          if(handle(obj, true)) added = true;
+        });
+        lastPollSinceTs = pollTimestamp;
+        if(added){ msgs.sort(function(a,b){ return a.ts - b.ts; }); renderMessages(); }
+      })
+      .catch(function(){ tryRelay(idx + 1); });
+  }
+  tryRelay(0);
+}
+
+function resetPollTimer(){
+  if(pollTimer) clearInterval(pollTimer);
+  var interval = sseOk ? POLL_INTERVAL_SSE_UP : POLL_INTERVAL_SSE_DOWN;
+  pollTimer = setInterval(function(){ catchUp(lastPollSinceTs); }, interval);
+}
+
+function handle(obj, quiet){
+  if(!obj) return false;
+  var age = Date.now() - (obj.ts || 0);
+  if(obj.t === 'chunk'){ onChunk(obj); return false; }
+  if(obj.t === 'msg'){
+    if(msgs.some(function(x){ return x.id === obj.m.id; })) return false;
+    msgs.push(obj.m); saveMsgs();
+    if(!quiet){ appendOne(obj.m); scrollBottom(false); if(obj.m.pid !== me.pid) blip(430); }
+    return true;
+  }
+  if(obj.t === 'type'){ if(!quiet && age < 6000) showTyping(obj.name); return false; }
+  if(obj.t === 'hi'){
+    if(age < 16000){
+      peers.set(obj.pid, { name:obj.name, last:Date.now() });
+      if(obj.pid !== me.pid && !greeted.has(obj.pid)){ greeted.add(obj.pid); publishObj({ t:'hi', pid:me.pid, name:me.name }); }
+      renderPeople();
+    }
+    return false;
+  }
+  if(obj.t === 'burn'){ if(age < 60000){ msgs = []; saveMsgs(); renderMessages(); toast('ROOM TORCHED BY YOUR BUDDY ??'); } return false; }
+  return false;
+}
+
+function gimmeLink(){
+  var name = ($('inp-name').value || '').trim();
+  if(!name){ toast('TYPE A NAME FIRST ??'); return; }
+  room = rid(); me = { pid:ensurePID(), name:name }; ensureTopic();
+  $('t-room').textContent = '#' + room;
+  refreshTicketLink(); showView('ticket'); blip(660);
+  storeSet('yap:name:' + room, name);
+  try{ history.replaceState(null, '', '?room=' + room + '&host=' + encodeURIComponent(name)); }catch(e){}
+}
+function whoSubmit(){
+  var name = ($('inp-who').value || '').trim();
+  if(!name){ toast('TYPE A NAME FIRST ??'); return; }
+  me = { pid:ensurePID(), name:name }; storeSet('yap:name:' + room, name);
+  enterChat(); blip(660);
+}
+function enterChat(){
+  if(!me) me = { pid:ensurePID(), name:storeGet('yap:name:' + room) || 'anon' };
+  ensureTopic(); showView('chat');
+  $('ch-room').textContent = '#' + room;
+  msgs = loadMsgs(); renderMessages(); setupChannel();
+  subscribe(); catchUp(0); resetPollTimer();
+  publishObj({ t:'hi', pid:me.pid, name:me.name });
+  setInterval(function(){ publishObj({ t:'hi', pid:me.pid, name:me.name }); }, 8000);
+  setInterval(renderPeople, 4000);
+  var inp = $('inp-msg'); if(inp) inp.focus();
+}
+
+function setupChannel(){
+  if(channelSetup) return; channelSetup = true;
+  if(window.BroadcastChannel){
+    try{ channel = new BroadcastChannel('yap-' + room); channel.onmessage = function(e){ onChannel(e.data); }; }catch(e){ channel = null; }
+  }
+  try{
+    window.addEventListener('storage', function(e){
+      if(e.key !== 'yap:msgs:' + room || !e.newValue) return;
+      try{ var f = JSON.parse(e.newValue); if(f.length !== msgs.length){ msgs = f; renderMessages(); if(f.length) blip(430); } }catch(err){}
+    });
+  }catch(e){}
+}
+function onChannel(d){
+  if(!d) return;
+  if(d.type === 'message') receiveMessage(d.message);
+  if(d.type === 'typing') showTyping(d.name);
+  if(d.type === 'burn'){ msgs = []; renderMessages(); toast('ROOM TORCHED ??'); }
+}
+
+function sendClick(){
+  var inp = $('inp-msg'); var text = (inp.value || '').trim(); if(!text) return;
+  var r = $('btn-send').getBoundingClientRect(); burst(r.left + r.width/2, r.top);
+  var m = { id:uid(), pid:me.pid, name:me.name, kind:'text', text:text, ts:Date.now() };
+  pushAndSend(m); inp.value = ''; $('btn-send').classList.remove('ready'); inp.focus();
+}
+function pushAndSend(m){
+  msgs.push(m); saveMsgs(); appendOne(m); scrollBottom(true);
+  if(channel){ try{ channel.postMessage({ type:'message', message:m }); }catch(e){} }
+  publishObj({ t:'msg', m:m }); blip(720);
+}
+function receiveMessage(m){
+  if(msgs.some(function(x){ return x.id === m.id; })) return;
+  msgs.push(m); saveMsgs(); appendOne(m); scrollBottom(false); blip(430);
+}
+
+var lastTypeTs = 0;
+function onType(){
+  $('btn-send').classList.toggle('ready', !!$('inp-msg').value.trim());
+  var n = Date.now();
+  if(n - lastTypeTs > 1500){
+    lastTypeTs = n;
+    if(channel){ try{ channel.postMessage({ type:'typing', name:me.name }); }catch(e){} }
+    publishObj({ t:'type', name:me.name });
+  }
+}
+function showTyping(name){
+  if(!me || name === me.name) return;
+  $('typing-name').textContent = name;
+  $('typing').classList.add('on');
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(function(){ $('typing').classList.remove('on'); }, 2500);
+}
+function renderPeople(){
+  var now = Date.now();
+  var live = Array.from(peers.values()).filter(function(p){ return now - p.last < 18000; });
+  var el = $('ch-people');
+  if(live.length){ el.textContent = '?? ' + (live.length + 1) + ' in the zone — ' + live.map(function(p){ return p.name; }).join(', '); }
+  else { el.textContent = '?? just you — send the link!'; }
+}
+function emojiInsert(btn){
+  var inp = $('inp-msg'); var s = caret(inp), e = caretEnd(inp);
+  inp.value = inp.value.slice(0, s) + btn.textContent + inp.value.slice(e);
+  inp.focus();
+  try{ inp.selectionStart = inp.selectionEnd = s + btn.textContent.length; }catch(err){}
+  $('btn-send').classList.add('ready');
+}
+
+function imgClick(){ var f = $('filePick'); f.value = ''; f.click(); }
+function onFileChange(){ var f = $('filePick'); if(f.files && f.files[0]) handleImage(f.files[0]); }
+function handleImage(file){
+  compressImage(file).then(function(data){
+    if(!data){ toast('COULD NOT READ THAT PIC ??'); return; }
+    var m = { id:uid(), pid:me.pid, name:me.name, kind:'img', data:data, ts:Date.now() };
+    if(JSON.stringify(m).length > MAXBODY){ toast('PIC TOO BIG EVEN AFTER SQUEEZE ???'); return; }
+    var r = $('btn-send').getBoundingClientRect(); burst(r.left + r.width/2, r.top);
+    msgs.push(m); saveMsgs(); appendOne(m); scrollBottom(true);
+    toast('SENDING PIC… ??');
+    publishObj({ t:'msg', m:m }, function(){ blip(720); });
+  });
+}
+function compressImage(file){
+  return new Promise(function(res){
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function(){
+      var max = 900, sc = Math.min(1, max / Math.max(img.width, img.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .7));
+    };
+    img.onerror = function(){ res(null); };
+    img.src = url;
+  });
+}
+
+function copyLink(){
+  var l = buildShareLink();
+  if(!l){ toast('DEPLOY SITE FIRST TO GET A SHAREABLE LINK'); return; }
+  function exec(){
+    var t = document.createElement('textarea'); t.value = l; document.body.appendChild(t); t.select();
+    try{ document.execCommand('copy'); toast('LINK COPIED ??'); blip(880); }
+    catch(e){ toast('LONG-PRESS THE LINK TO COPY ??'); }
+    kill(t);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(l).then(function(){ toast('LINK COPIED ??'); blip(880); }, exec);
+  else exec();
+}
+function newRoom(){
+  if(isHttp()){ location.href = location.pathname; }
+  else { room = null; me = null; topic = null; showView('landing'); var i = $('inp-name'); if(i){ i.value = ''; i.focus(); } }
+}
+function burnClick(b){
+  if(!burnArmed){
+    burnArmed = true; b.textContent = 'SURE? ??'; b.classList.add('armed');
+    burnT = setTimeout(function(){ burnArmed = false; b.textContent = '?? BURN'; b.classList.remove('armed'); }, 2600);
+  } else {
+    clearTimeout(burnT); burnArmed = false; b.textContent = '?? BURN'; b.classList.remove('armed');
+    msgs = []; saveMsgs(); renderMessages();
+    if(channel){ try{ channel.postMessage({ type:'burn' }); }catch(e){} }
+    publishObj({ t:'burn', pid:me.pid }); toast('CHAT TORCHED ??');
+  }
+}
+
+function scrollBottom(smooth){
+  var c = $('msgs'); if(!c) return;
+  if(smooth) c.scrollTo({ top:c.scrollHeight, behavior:'smooth' });
+  else c.scrollTop = c.scrollHeight;
+}
+function dayLabel(ts){
+  var d = new Date(ts), now = new Date(), yest = new Date(Date.now() - 864e5);
+  if(d.toDateString() === now.toDateString()) return 'TODAY';
+  if(d.toDateString() === yest.toDateString()) return 'YESTERDAY';
+  return d.toLocaleDateString([], { month:'short', day:'numeric' }).toUpperCase();
+}
+function renderMessages(){
+  var c = $('msgs'); c.innerHTML = '';
+  if(!msgs.length){
+    c.innerHTML = '<div class="empty"><span class="big">??</span><h3>Silence is sus.</h3><p>First yap wins the crown ?? Send your link and watch it go LIVE.</p></div>';
+    return;
+  }
+  var lastDay = '';
+  msgs.forEach(function(m){
+    var day = new Date(m.ts).toDateString();
+    if(day !== lastDay){ lastDay = day; var dv = document.createElement('div'); dv.className = 'day'; dv.textContent = dayLabel(m.ts); c.appendChild(dv); }
+    appendOne(m, false);
+  });
+  c.scrollTop = c.scrollHeight;
+}
+function appendOne(m, doScroll){
+  var c = $('msgs');
+  var empty = c.querySelector('.empty'); if(empty) kill(empty);
+  var mine = me && m.pid === me.pid;
+  var wrap = document.createElement('div'); wrap.className = 'msg ' + (mine ? 'me' : 'them');
+  var bub = document.createElement('div'); bub.className = 'bub'; bub.style.setProperty('--r', rot(m.id) + 'deg');
+  if(!mine){ var who = document.createElement('span'); who.className = 'who-name'; who.textContent = m.name; bub.appendChild(who); }
+  if(m.kind === 'text'){ var sp = document.createElement('span'); sp.innerHTML = fmt(m.text); bub.appendChild(sp); }
+  else if(m.kind === 'img'){
+    var im = document.createElement('img'); im.className = 'pic'; im.src = m.data; im.alt = 'shared pic';
+    im.onclick = function(){ var lb = $('lightbox'); lb.querySelector('img').src = m.data; lb.hidden = false; };
+    bub.appendChild(im);
+  }
+  var meta = document.createElement('div'); meta.className = 'meta';
+  meta.textContent = (mine ? 'you' : m.name) + ' · ' + new Date(m.ts).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  wrap.appendChild(bub); wrap.appendChild(meta); c.appendChild(wrap);
+  if(doScroll !== false) c.scrollTop = c.scrollHeight;
+}
+
+function boot(){
+  var MT = '? YAP! ? SEND PICS ? ONE LINK = ONE BESTIE ? NO ACCOUNTS ? LIVE ACROSS PHONES ? YOUR LINK REMEMBERS YOU ';
+  ['mtrack','mtrack2'].forEach(function(id){
+    var el = $(id); if(!el) return;
+    el.innerHTML = ('<span>' + MT.split('?').join('</span><span>?</span><span>') + '</span>').repeat(2);
+  });
+  var em = ['??','?','??','??','??','??','???','??','??','?','??','??','??','??'];
+  for(var i = 0; i < 14; i++){
+    var d = document.createElement('span'); d.className = 'doodle';
+    d.textContent = em[i % em.length];
+    d.style.left = (2 + Math.random() * 94) + 'vw';
+    d.style.top  = (4 + Math.random() * 90) + 'vh';
+    d.style.fontSize = (16 + Math.random() * 28) + 'px';
+    d.style.setProperty('--d',  (4 + Math.random() * 5) + 's');
+    d.style.setProperty('--dl', (Math.random() * 4) + 's');
+    document.body.appendChild(d);
+  }
+  manualBase = storeGet('yap:manualBase') || '';
+  var q = new URLSearchParams(window.location.search);
+  room = q.get('room'); hostParam = q.get('host');
+  if(!room){ showView('landing'); return; }
+  ensureTopic();
+  var saved = storeGet('yap:name:' + room);
+  if(saved){ me = { pid:ensurePID(), name:saved }; enterChat(); }
+  else {
+    showView('who');
+    $('who-room').textContent = '#' + room;
+    if(hostParam) $('who-host').innerHTML = '<b>' + esc(hostParam) + '</b> opened this yap room and is waiting for you ??';
+  }
+}
+boot();
+</script>
+</body>
+</html>
