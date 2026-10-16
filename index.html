@@ -261,24 +261,18 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
 <input type="file" id="filePick" hidden accept="image/*" onchange="onFileChange()">
 
 <script>
-var room = null, hostParam = null, me = null, msgs = [], manualBase = '';
+var room = null, hostParam = null, me = null, msgs = [];
 var channel = null, audioCtx = null, typingTimer = null;
-var channelSetup = false, burnArmed = false, burnT = null, visSetup = false;
+var channelSetup = false, burnArmed = false, burnT = null;
+var wakeSetup = false, pollStarted = false, hbStarted = false;
 var peers = new Map(), greeted = new Set();
-var topic = null;
+var topic = null, es = null, reopenT = null;
 
-/* ── relay config: 3 mirrors for rate-limit fallback ── */
+/* 3 independent relays — sender tries all, receiver reads ALL */
 var RELAYS = ['https://ntfy.sh/', 'https://ntfy.envs.net/', 'https://ntfy.tedomum.net/'];
-var relayIdx = 0;
 var MAXBODY = 380000, CHUNK = 3800, chunkBuf = {};
-var lastPollSinceTs = 0, pollTimer = null, sseOk = false;
-
-/* ── tuned timings: quota-safe + low latency ── */
-var HEARTBEAT_MS = 60000;          /* presence ping every 60s (was 8s → burned quota) */
-var PRESENCE_MS  = 130000;         /* peer considered live for 130s */
-var TYPE_MS      = 2500;           /* typing broadcast throttle */
-var POLL_UP      = 5000;           /* poll every 5s when SSE live (safety net) */
-var POLL_DOWN    = 3000;           /* poll every 3s when SSE down */
+var lastPollSinceTs = 0;
+var HEARTBEAT_MS = 60000, PRESENCE_MS = 130000, TYPE_MS = 2500, POLL_MS = 4000;
 
 function $(id){ return document.getElementById(id); }
 function kill(el){ if(el && el.parentNode) el.parentNode.removeChild(el); }
@@ -291,6 +285,7 @@ function caret(el){ return el.selectionStart == null ? el.value.length : el.sele
 function caretEnd(el){ return el.selectionEnd == null ? caret(el) : el.selectionEnd; }
 function isHttp(){ var p = location.protocol; return p === 'http:' || p === 'https:'; }
 function nowSec(){ return Math.floor(Date.now() / 1000); }
+function inChat(){ return room && me && !$('view-chat').hidden; }
 
 function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function storeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
@@ -299,10 +294,7 @@ function loadMsgs(){ try{ return JSON.parse(storeGet('yap:msgs:' + room) || '[]'
 function saveMsgs(){ try{ localStorage.setItem('yap:msgs:' + room, JSON.stringify(msgs)); } catch(e){ toast('STORAGE FULL — HIT BURN ⚠️'); } }
 function ensureTopic(){ if(room && !topic) topic = 'yap-' + room.toLowerCase() + '-v2'; }
 
-function currentBase(){
-  if(isHttp()) return location.href.split(/[?#]/)[0];
-  return null;
-}
+function currentBase(){ if(isHttp()) return location.href.split(/[?#]/)[0]; return null; }
 function buildShareLink(){
   var base = currentBase(); if(!base || !room) return null;
   return base + '?room=' + room + (me ? '&host=' + encodeURIComponent(me.name) : '');
@@ -310,13 +302,8 @@ function buildShareLink(){
 function refreshTicketLink(){
   var link = $('t-link'), wa = $('btn-wa');
   var full = buildShareLink();
-  if(full){
-    link.value = full;
-    if(wa){ wa.href = 'https://wa.me/?text=' + encodeURIComponent('Join my YAP! room: ' + full); wa.style.display = ''; }
-  } else {
-    link.value = '';
-    if(wa) wa.style.display = 'none';
-  }
+  if(full){ link.value = full; if(wa){ wa.href = 'https://wa.me/?text=' + encodeURIComponent('Join my YAP! room: ' + full); wa.style.display = ''; } }
+  else { link.value = ''; if(wa) wa.style.display = 'none'; }
 }
 
 function showView(v){
@@ -352,39 +339,101 @@ function burst(x, y){
   }
 }
 
-/* ═══════════ relay — publish with mirror fallback + retry ═══════════ */
-function sendRaw(body, attempt){
-  if(!window.fetch) return Promise.resolve(false);
-  attempt = attempt || 0;
-  if(attempt >= RELAYS.length) return Promise.resolve(false);
-  var url = RELAYS[(relayIdx + attempt) % RELAYS.length] + topic;
-  return fetch(url, { method:'POST', headers:{ 'Content-Type':'text/plain' }, body: body })
-    .then(function(r){
-      if(r.status === 429 || r.status >= 400) return sendRaw(body, attempt + 1);
-      relayIdx = (relayIdx + attempt) % RELAYS.length;
-      return true;
-    })
-    .catch(function(){ return sendRaw(body, attempt + 1); });
+/* ═══════════ LIVE CONNECTION (SSE) — self-healing ═══════════ */
+function setLiveStatus(state){
+  var el = $('ch-net'); if(!el) return;
+  if(state === 'live'){ el.textContent = '☁️ LIVE'; el.className = 'ch-net'; }
+  else if(state === 'polling'){ el.textContent = '🔄 SYNC…'; el.className = 'ch-net polling'; }
+  else { el.textContent = '📴 OFFLINE'; el.className = 'ch-net off'; }
 }
 
-function trySend(body, retry, done){
-  sendRaw(body).then(function(ok){
-    if(ok){ if(done) done(); return; }
-    if(retry < 3){ setTimeout(function(){ trySend(body, retry + 1, done); }, 1500); }
-    else { toast('RELAY BUSY — RETRYING SOON 🔁'); if(done) done(); }
+function scheduleReopen(ms){
+  if(reopenT) clearTimeout(reopenT);
+  reopenT = setTimeout(function(){ reopenT = null; if(inChat()) openSSE(); }, ms);
+}
+
+function openSSE(){
+  if(es){ try{ es.close(); }catch(e){} es = null; }
+  ensureTopic();
+  if(!topic || !window.EventSource){ setLiveStatus('off'); return; }
+  setLiveStatus('polling');
+  var delay = 1000;
+  try{ es = new EventSource(RELAYS[0] + topic + '/sse'); }
+  catch(e){ scheduleReopen(3000); return; }
+  es.onopen = function(){ setLiveStatus('live'); };
+  es.onerror = function(){
+    setLiveStatus('polling');
+    try{ es.close(); }catch(e){}
+    es = null;
+    scheduleReopen(delay);
+    delay = Math.min(delay * 2, 8000);
+  };
+  es.onmessage = function(ev){
+    var env; try{ env = JSON.parse(ev.data); }catch(e){ return; }
+    if(env.event !== 'message' || !env.message) return;
+    var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
+    handle(obj, false);
+  };
+}
+
+/* ═══════════ POLLING — reads ALL relays every 4s (nothing can hide) ═══════════ */
+function pollAll(){
+  ensureTopic(); if(!topic || !window.fetch || !room) return;
+  var since = lastPollSinceTs > 0 ? lastPollSinceTs : '12h';
+  var t0 = nowSec();
+  var jobs = RELAYS.map(function(base){
+    return fetch(base + topic + '/json?poll=1&since=' + since, { headers:{ 'Accept':'application/x-ndjson' } })
+      .then(function(r){ return r.ok ? r.text() : ''; })
+      .catch(function(){ return ''; });
+  });
+  Promise.all(jobs).then(function(texts){
+    var added = false, anyOk = false;
+    texts.forEach(function(text){
+      if(!text || !text.trim()) return;
+      anyOk = true;
+      text.split('\n').forEach(function(line){
+        if(!line.trim()) return;
+        var env; try{ env = JSON.parse(line); }catch(e){ return; }
+        if(env.event !== 'message' || !env.message) return;
+        var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
+        if(handle(obj, true)) added = true;
+      });
+    });
+    if(anyOk) lastPollSinceTs = t0;
+    if(added){ msgs.sort(function(a,b){ return a.ts - b.ts; }); renderMessages(); }
   });
 }
 
+/* ═══════════ PUBLISH — fresh try of all relays every send, no sticky state ═══════════ */
+function postOnce(url, body){
+  return fetch(url, { method:'POST', headers:{ 'Content-Type':'text/plain' }, body: body })
+    .then(function(r){ return r.ok; })
+    .catch(function(){ return false; });
+}
+function publishBody(body, done){
+  (function cycle(retries){
+    (function tryRelay(i){
+      if(i >= RELAYS.length){
+        if(retries > 0){ setTimeout(function(){ cycle(retries - 1); }, 1200); }
+        else { toast('RELAY BUSY — RETRYING SOON 🔁'); if(done) done(); }
+        return;
+      }
+      postOnce(RELAYS[i] + topic, body).then(function(ok){
+        if(ok){ if(done) done(); } else { tryRelay(i + 1); }
+      });
+    })(0);
+  })(2);
+}
 function publishObj(obj, done){
   ensureTopic(); if(!topic){ if(done) done(); return; }
   obj.ts = obj.ts || Date.now();
   var body = JSON.stringify(obj);
-  if(body.length <= CHUNK){ trySend(body, 0, done); return; }
+  if(body.length <= CHUNK){ publishBody(body, done); return; }
   var cid = uid(), n = Math.ceil(body.length / CHUNK), i = 0;
   (function next(){
     if(i >= n){ if(done) done(); return; }
     var env = JSON.stringify({ t:'chunk', cid:cid, i:i, n:n, d:body.substr(i * CHUNK, CHUNK) });
-    trySend(env, 0, function(){ i++; setTimeout(next, 100); });
+    publishBody(env, function(){ i++; setTimeout(next, 100); });
   })();
 }
 
@@ -404,68 +453,20 @@ setInterval(function(){
   for(var k in chunkBuf) if(now - chunkBuf[k].born > 30000) delete chunkBuf[k];
 }, 10000);
 
-/* ═══════════ relay — receive (SSE + poll safety net) ═══════════ */
-function setLiveStatus(state){
-  var el = $('ch-net'); if(!el) return;
-  sseOk = (state === 'live');
-  if(state === 'live'){ el.textContent = '☁️ LIVE'; el.className = 'ch-net'; }
-  else if(state === 'polling'){ el.textContent = '🔄 POLLING'; el.className = 'ch-net polling'; }
-  else { el.textContent = '📴 OFFLINE'; el.className = 'ch-net off'; }
-  resetPollTimer();
-}
+/* ═══════════ WATCHDOG — rebuilds zombie connections every 20s ═══════════ */
+setInterval(function(){
+  if(!inChat() || document.visibilityState !== 'visible') return;
+  if(!es || es.readyState !== 1){ if(!reopenT) openSSE(); }
+}, 20000);
 
-function subscribe(){
-  ensureTopic();
-  if(!topic || !window.EventSource){ setLiveStatus('off'); return; }
-  var delay = 1000;
-  function connect(){
-    var url = RELAYS[0] + topic + '/sse';
-    var es;
-    try{ es = new EventSource(url); }
-    catch(e){ setLiveStatus('off'); setTimeout(connect, delay); delay = Math.min(delay*2, 10000); return; }
-    es.onopen = function(){ setLiveStatus('live'); delay = 1000; };
-    es.onerror = function(){ setLiveStatus('polling'); es.close(); setTimeout(connect, delay); delay = Math.min(delay * 2, 10000); };
-    es.onmessage = function(ev){
-      var env; try{ env = JSON.parse(ev.data); }catch(e){ return; }
-      if(env.event !== 'message' || !env.message) return;
-      var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
-      handle(obj, false);
-    };
-  }
-  connect();
-}
-
-function catchUp(sinceTs){
-  ensureTopic(); if(!topic || !window.fetch) return;
-  var since = (sinceTs && sinceTs > 0) ? sinceTs : '12h';
-  var pollTimestamp = nowSec();
-  function tryRelay(idx){
-    if(idx >= RELAYS.length) return;
-    var url = RELAYS[idx] + topic + '/json?poll=1&since=' + since;
-    fetch(url, { headers:{ 'Accept':'application/x-ndjson' } })
-      .then(function(r){ return r.text(); })
-      .then(function(text){
-        if(!text.trim()){ lastPollSinceTs = pollTimestamp; return; }
-        var added = false;
-        text.split('\n').forEach(function(line){
-          if(!line.trim()) return;
-          var env; try{ env = JSON.parse(line); }catch(e){ return; }
-          if(env.event !== 'message' || !env.message) return;
-          var obj; try{ obj = JSON.parse(env.message); }catch(e){ return; }
-          if(handle(obj, true)) added = true;
-        });
-        lastPollSinceTs = pollTimestamp;
-        if(added){ msgs.sort(function(a,b){ return a.ts - b.ts; }); renderMessages(); }
-      })
-      .catch(function(){ tryRelay(idx + 1); });
-  }
-  tryRelay(0);
-}
-
-function resetPollTimer(){
-  if(pollTimer) clearInterval(pollTimer);
-  var interval = sseOk ? POLL_UP : POLL_DOWN;
-  pollTimer = setInterval(function(){ catchUp(lastPollSinceTs); }, interval);
+/* ═══════════ WAKE-UP — instant resync on return / focus / network back ═══════════ */
+function setupWake(){
+  if(wakeSetup) return; wakeSetup = true;
+  function wake(){ if(!inChat()) return; pollAll(); openSSE(); }
+  document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') wake(); });
+  window.addEventListener('focus', wake);
+  window.addEventListener('pageshow', wake);
+  window.addEventListener('online', wake);
 }
 
 /* ═══════════ message handler ═══════════ */
@@ -513,22 +514,13 @@ function enterChat(){
   ensureTopic(); showView('chat');
   $('ch-room').textContent = '#' + room;
   msgs = loadMsgs(); renderMessages(); setupChannel();
-  subscribe(); catchUp(0); resetPollTimer();
+  openSSE();
+  pollAll();
+  if(!pollStarted){ pollStarted = true; setInterval(pollAll, POLL_MS); }
+  if(!hbStarted){ hbStarted = true; setInterval(function(){ publishObj({ t:'hi', pid:me.pid, name:me.name }); }, HEARTBEAT_MS); }
   publishObj({ t:'hi', pid:me.pid, name:me.name });
-  setInterval(function(){ publishObj({ t:'hi', pid:me.pid, name:me.name }); }, HEARTBEAT_MS);
   setInterval(renderPeople, 4000);
   var inp = $('inp-msg'); if(inp) inp.focus();
-}
-
-/* wake-up sync: when tab returns from background, resync instantly */
-function setupVisibility(){
-  if(visSetup) return; visSetup = true;
-  document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState === 'visible' && room && me && !$('view-chat').hidden){
-      catchUp(lastPollSinceTs);
-      resetPollTimer();
-    }
-  });
 }
 
 function setupChannel(){
@@ -710,7 +702,7 @@ function boot(){
     var el = $(id); if(!el) return;
     el.innerHTML = ('<span>' + MT.split('★').join('</span><span>★</span><span>') + '</span>').repeat(2);
   });
-  var em = ['💬','⚡','','🫶','🎉','💾','️','✏️','','⭐','🤪','💥','🌈','👾'];
+  var em = ['💬','','🔥','','🎉','💾','🖼️','✏️','','⭐','','💥','','👾'];
   for(var i = 0; i < 14; i++){
     var d = document.createElement('span'); d.className = 'doodle';
     d.textContent = em[i % em.length];
@@ -721,7 +713,7 @@ function boot(){
     d.style.setProperty('--dl', (Math.random() * 4) + 's');
     document.body.appendChild(d);
   }
-  setupVisibility();
+  setupWake();
   var q = new URLSearchParams(window.location.search);
   room = q.get('room'); hostParam = q.get('host');
   if(!room){ showView('landing'); return; }
