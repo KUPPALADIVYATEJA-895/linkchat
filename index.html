@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YAP! — one link, one bestie, zero chill</title>
 <meta name="description" content="The loudest little chat on the internet. One magic link, two legends, unlimited nonsense — live across phones.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -78,11 +78,6 @@ input.t-link{width:100%;font-weight:700;background:#fff;border:3px dashed var(--
 input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
 .t-actions{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.2rem}
 .ticket .fine{max-width:46ch;margin:0 auto}
-.deploy-panel{margin:0 0 1.1rem;text-align:left}
-.deploy-panel code{background:#14131214;padding:.05em .35em;border-radius:5px;font-size:.85em;font-weight:700}
-.warn{background:#FFE7D6;border:3px solid var(--orange);box-shadow:5px 5px 0 var(--ink);border-radius:14px 4px 14px 4px;padding:.85rem 1rem;font-weight:600;font-size:.85rem;line-height:1.55;margin-bottom:.8rem}
-#manual-base{margin-top:.2rem}
-#t-status{margin-top:.5rem;font-weight:700;font-size:.8rem}
 .who-wrap{min-height:calc(100vh - 40px);display:grid;place-items:center;padding:2rem 1rem}
 .who-card{max-width:520px;width:100%;padding:2.4rem 2rem;text-align:center;transform:rotate(1deg)}
 .who-emoji{font-size:4.2rem;animation:wob 2.2s ease-in-out infinite;display:inline-block}
@@ -155,34 +150,34 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
   <div class="hero">
     <div class="hero-left">
       <div class="badge-row">
-        <span class="sticker s1">NO ACCOUNTS ??</span>
-        <span class="sticker s2">1 LINK = 1 BESTIE ??</span>
+        <span class="sticker s1">NO ACCOUNTS ✖️</span>
+        <span class="sticker s2">1 LINK = 1 BESTIE 🔗</span>
       </div>
       <h1 class="logo-big">YAP<span class="bang">!</span></h1>
       <p class="tag">The loudest little chat on the internet. One magic link, two legends, unlimited nonsense — pics and all, <b>live across phones</b>. The link remembers your friend. Forever.</p>
       <form class="card name-card" onsubmit="gimmeLink();return false;">
         <label for="inp-name">What's your name, legend?</label>
         <div class="inp-row">
-          <input type="text" id="inp-name" maxlength="18" placeholder="e.g. Priya ??" autocomplete="off">
-          <button type="submit" class="btn">GIMME MY LINK ?</button>
+          <input type="text" id="inp-name" maxlength="18" placeholder="e.g. Priya 🍕" autocomplete="off">
+          <button type="submit" class="btn">GIMME MY LINK →</button>
         </div>
         <p class="fine">60 seconds to your own private chat room. No email. No OTP. No drama.</p>
       </form>
     </div>
     <div class="hero-right">
       <div class="preview card" aria-hidden="true">
-        <div class="pv-head"><span class="pv-dot"></span> priya ? arjun <span class="pv-live">? LIVE</span></div>
+        <div class="pv-head"><span class="pv-dot"></span> priya ✦ arjun <span class="pv-live">● LIVE</span></div>
         <div class="pv-body">
-          <div class="pv-bub them a1">bro look at this cat ??</div>
-          <div class="pv-bub me a2">NO WAY HAHAHA ??</div>
-          <div class="pv-bub them a3">?? suspicious_cat.jpg</div>
+          <div class="pv-bub them a1">bro look at this cat 😭</div>
+          <div class="pv-bub me a2">NO WAY HAHAHA 💀</div>
+          <div class="pv-bub them a3">📸 suspicious_cat.jpg</div>
           <div class="pv-bub me a4">sending this to the group immediately</div>
           <div class="pv-typing a5"><i></i><i></i><i></i></div>
         </div>
       </div>
       <div class="notes">
         <div class="note n1"><b>STEP 1 — DEPLOY</b> Upload this single file to Render.</div>
-        <div class="note n2"><b>STEP 2 — CLAIM IT</b> Open the link, type your name ? get your personal link.</div>
+        <div class="note n2"><b>STEP 2 — CLAIM IT</b> Open the link, type your name → get your personal link.</div>
         <div class="note n3"><b>STEP 3 — YAP FOREVER</b> Send it to one friend. They type their name once; the link remembers them.</div>
       </div>
     </div>
@@ -195,13 +190,13 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
 <section id="view-ticket" class="view" hidden>
   <div class="ticket-wrap">
     <div class="ticket card">
-      <div class="t-head">??? YOUR GOLDEN TICKET</div>
+      <div class="t-head">🎟️ YOUR GOLDEN TICKET</div>
       <div class="t-room" id="t-room">#------</div>
       <input class="t-link" id="t-link" readonly value="" placeholder="your shareable link appears here…" onclick="this.select()">
       <div class="t-actions">
-        <button type="button" class="btn" onclick="copyLink()">?? COPY LINK</button>
-        <a class="btn btn-lime" id="btn-wa" target="_blank" rel="noopener">?? WHATSAPP IT</a>
-        <button type="button" class="btn btn-cyan" onclick="enterChat()">ENTER THE CHAT ?</button>
+        <button type="button" class="btn" onclick="copyLink()">📋 COPY LINK</button>
+        <a class="btn btn-lime" id="btn-wa" target="_blank" rel="noopener">💚 WHATSAPP IT</a>
+        <button type="button" class="btn btn-cyan" onclick="enterChat()">ENTER THE CHAT →</button>
       </div>
       <p class="fine">Send this exact link to <b>one friend</b>. They type their name <b>once</b> — the link remembers them forever.</p>
     </div>
@@ -211,15 +206,15 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
 <section id="view-who" class="view" hidden>
   <div class="who-wrap">
     <div class="who-card card">
-      <span class="who-emoji">??</span>
+      <span class="who-emoji">👀</span>
       <h2 class="who-title">You've been summoned to<br><span id="who-room">#------</span></h2>
       <p id="who-host">Someone opened this yap room just for you.</p>
       <form id="form-who" onsubmit="whoSubmit();return false;">
         <label for="inp-who">ok but… who dis?</label>
         <input type="text" id="inp-who" maxlength="18" placeholder="type your name…" autocomplete="off">
-        <button type="submit" class="btn">LET ME IN ?</button>
+        <button type="submit" class="btn">LET ME IN →</button>
       </form>
-      <p class="fine">One time only. This link will remember you — next visit you walk straight in. ??</p>
+      <p class="fine">One time only. This link will remember you — next visit you walk straight in. 🚪</p>
     </div>
   </div>
 </section>
@@ -228,34 +223,34 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
   <header class="chat-head">
     <span class="ch-logo">YAP!</span>
     <span class="ch-room" id="ch-room" onclick="copyLink()" title="click to copy link">#------</span>
-    <span class="ch-net off" id="ch-net">?? CONNECTING…</span>
-    <span class="ch-people" id="ch-people">?? just you — send the link!</span>
+    <span class="ch-net off" id="ch-net">☁️ CONNECTING…</span>
+    <span class="ch-people" id="ch-people">🟡 just you — send the link!</span>
     <div class="ch-right">
-      <button type="button" class="btn sm" onclick="copyLink()">?? COPY LINK</button>
-      <button type="button" class="btn btn-cyan sm" onclick="newRoom()">+ NEW ROOM</button>
-      <button type="button" class="btn btn-orange sm" id="btn-burn" onclick="burnClick(this)">?? BURN</button>
+      <button type="button" class="btn sm" onclick="copyLink()">📋 COPY LINK</button>
+      <button type="button" class="btn btn-cyan sm" onclick="newRoom()">＋ NEW ROOM</button>
+      <button type="button" class="btn btn-orange sm" id="btn-burn" onclick="burnClick(this)">🔥 BURN</button>
     </div>
   </header>
   <main class="msgs" id="msgs"></main>
   <div class="typing" id="typing"><span class="t-dots"><i></i><i></i><i></i></span> <b id="typing-name"></b> is typing…</div>
   <footer class="composer">
     <div class="emoji-row">
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
-      <button type="button" onclick="emojiInsert(this)">??</button>
+      <button type="button" onclick="emojiInsert(this)">😂</button>
+      <button type="button" onclick="emojiInsert(this)">💀</button>
+      <button type="button" onclick="emojiInsert(this)">🔥</button>
+      <button type="button" onclick="emojiInsert(this)">❤️</button>
+      <button type="button" onclick="emojiInsert(this)">😭</button>
+      <button type="button" onclick="emojiInsert(this)">👀</button>
+      <button type="button" onclick="emojiInsert(this)">🎉</button>
+      <button type="button" onclick="emojiInsert(this)">🫶</button>
+      <button type="button" onclick="emojiInsert(this)">💯</button>
+      <button type="button" onclick="emojiInsert(this)">🍕</button>
     </div>
     <div class="c-row">
-      <button type="button" class="icon-btn" onclick="imgClick()" title="send a pic">???</button>
+      <button type="button" class="icon-btn" onclick="imgClick()" title="send a pic">🖼️</button>
       <input type="text" id="inp-msg" placeholder="type some chaos…" autocomplete="off" maxlength="2000"
         oninput="onType()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){sendClick();event.preventDefault();}">
-      <button type="button" class="btn send" id="btn-send" onclick="sendClick()">SEND ?</button>
+      <button type="button" class="btn send" id="btn-send" onclick="sendClick()">SEND ➤</button>
     </div>
   </footer>
 </section>
@@ -268,14 +263,22 @@ input.t-link:focus{outline:none;box-shadow:4px 4px 0 var(--lime)}
 <script>
 var room = null, hostParam = null, me = null, msgs = [], manualBase = '';
 var channel = null, audioCtx = null, typingTimer = null;
-var channelSetup = false, burnArmed = false, burnT = null;
+var channelSetup = false, burnArmed = false, burnT = null, visSetup = false;
 var peers = new Map(), greeted = new Set();
 var topic = null;
-var RELAYS = ['https://ntfy.sh/', 'https://ntfy.envs.net/'];
+
+/* ── relay config: 3 mirrors for rate-limit fallback ── */
+var RELAYS = ['https://ntfy.sh/', 'https://ntfy.envs.net/', 'https://ntfy.tedomum.net/'];
 var relayIdx = 0;
 var MAXBODY = 380000, CHUNK = 3800, chunkBuf = {};
 var lastPollSinceTs = 0, pollTimer = null, sseOk = false;
-var POLL_INTERVAL_SSE_UP = 15000, POLL_INTERVAL_SSE_DOWN = 5000;
+
+/* ── tuned timings: quota-safe + low latency ── */
+var HEARTBEAT_MS = 60000;          /* presence ping every 60s (was 8s → burned quota) */
+var PRESENCE_MS  = 130000;         /* peer considered live for 130s */
+var TYPE_MS      = 2500;           /* typing broadcast throttle */
+var POLL_UP      = 5000;           /* poll every 5s when SSE live (safety net) */
+var POLL_DOWN    = 3000;           /* poll every 3s when SSE down */
 
 function $(id){ return document.getElementById(id); }
 function kill(el){ if(el && el.parentNode) el.parentNode.removeChild(el); }
@@ -293,16 +296,12 @@ function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return nul
 function storeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function ensurePID(){ var p = storeGet('yap:pid:' + room); if(!p){ p = uid(); storeSet('yap:pid:' + room, p); } return p; }
 function loadMsgs(){ try{ return JSON.parse(storeGet('yap:msgs:' + room) || '[]'); }catch(e){ return []; } }
-function saveMsgs(){ try{ localStorage.setItem('yap:msgs:' + room, JSON.stringify(msgs)); } catch(e){ toast('STORAGE FULL — HIT BURN ??'); } }
+function saveMsgs(){ try{ localStorage.setItem('yap:msgs:' + room, JSON.stringify(msgs)); } catch(e){ toast('STORAGE FULL — HIT BURN ⚠️'); } }
 function ensureTopic(){ if(room && !topic) topic = 'yap-' + room.toLowerCase() + '-v2'; }
 
 function currentBase(){
   if(isHttp()) return location.href.split(/[?#]/)[0];
-  var m = (manualBase || '').trim();
-  if(!m) return null;
-  if(!/^https?:\/\//i.test(m)) m = 'https://' + m;
-  if(!/^https?:\/\/[a-z0-9.-]+\.[a-z]{2,}/i.test(m)) return null;
-  return m.split(/[?#]/)[0];
+  return null;
 }
 function buildShareLink(){
   var base = currentBase(); if(!base || !room) return null;
@@ -319,7 +318,6 @@ function refreshTicketLink(){
     if(wa) wa.style.display = 'none';
   }
 }
-function onManualBase(){ manualBase = $('manual-base').value.trim(); storeSet('yap:manualBase', manualBase); refreshTicketLink(); }
 
 function showView(v){
   ['landing','ticket','who','chat'].forEach(function(n){
@@ -341,7 +339,7 @@ function blip(f){
   }catch(e){}
 }
 function burst(x, y){
-  var em = ['??','?','??','??','?','??','??'];
+  var em = ['🔥','⭐','💬','','✨','💥',''];
   for(var i = 0; i < 8; i++){
     var s = document.createElement('span'); s.className = 'pop-em';
     s.textContent = em[Math.floor(Math.random() * em.length)];
@@ -354,32 +352,39 @@ function burst(x, y){
   }
 }
 
+/* ═══════════ relay — publish with mirror fallback + retry ═══════════ */
 function sendRaw(body, attempt){
-  if(!window.fetch){ return Promise.resolve(); }
+  if(!window.fetch) return Promise.resolve(false);
   attempt = attempt || 0;
-  if(attempt >= RELAYS.length){ return Promise.resolve(); }
+  if(attempt >= RELAYS.length) return Promise.resolve(false);
   var url = RELAYS[(relayIdx + attempt) % RELAYS.length] + topic;
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: body
-  }).then(function(r){
-    if(r.status === 429 || r.status >= 500){ return sendRaw(body, attempt + 1); }
-    if(!r.ok) throw new Error('http ' + r.status);
-    relayIdx = (relayIdx + attempt) % RELAYS.length;
-  }).catch(function(){ return sendRaw(body, attempt + 1); });
+  return fetch(url, { method:'POST', headers:{ 'Content-Type':'text/plain' }, body: body })
+    .then(function(r){
+      if(r.status === 429 || r.status >= 400) return sendRaw(body, attempt + 1);
+      relayIdx = (relayIdx + attempt) % RELAYS.length;
+      return true;
+    })
+    .catch(function(){ return sendRaw(body, attempt + 1); });
+}
+
+function trySend(body, retry, done){
+  sendRaw(body).then(function(ok){
+    if(ok){ if(done) done(); return; }
+    if(retry < 3){ setTimeout(function(){ trySend(body, retry + 1, done); }, 1500); }
+    else { toast('RELAY BUSY — RETRYING SOON 🔁'); if(done) done(); }
+  });
 }
 
 function publishObj(obj, done){
   ensureTopic(); if(!topic){ if(done) done(); return; }
   obj.ts = obj.ts || Date.now();
   var body = JSON.stringify(obj);
-  if(body.length <= CHUNK){ sendRaw(body).then(function(){ if(done) done(); }); return; }
+  if(body.length <= CHUNK){ trySend(body, 0, done); return; }
   var cid = uid(), n = Math.ceil(body.length / CHUNK), i = 0;
   (function next(){
     if(i >= n){ if(done) done(); return; }
     var env = JSON.stringify({ t:'chunk', cid:cid, i:i, n:n, d:body.substr(i * CHUNK, CHUNK) });
-    sendRaw(env).then(function(){ i++; setTimeout(next, 120); });
+    trySend(env, 0, function(){ i++; setTimeout(next, 100); });
   })();
 }
 
@@ -399,26 +404,27 @@ setInterval(function(){
   for(var k in chunkBuf) if(now - chunkBuf[k].born > 30000) delete chunkBuf[k];
 }, 10000);
 
+/* ═══════════ relay — receive (SSE + poll safety net) ═══════════ */
 function setLiveStatus(state){
   var el = $('ch-net'); if(!el) return;
   sseOk = (state === 'live');
-  if(state === 'live'){ el.textContent = '?? LIVE'; el.className = 'ch-net'; }
-  else if(state === 'polling'){ el.textContent = '?? POLLING'; el.className = 'ch-net polling'; }
-  else { el.textContent = '?? OFFLINE'; el.className = 'ch-net off'; }
+  if(state === 'live'){ el.textContent = '☁️ LIVE'; el.className = 'ch-net'; }
+  else if(state === 'polling'){ el.textContent = '🔄 POLLING'; el.className = 'ch-net polling'; }
+  else { el.textContent = '📴 OFFLINE'; el.className = 'ch-net off'; }
   resetPollTimer();
 }
 
 function subscribe(){
   ensureTopic();
   if(!topic || !window.EventSource){ setLiveStatus('off'); return; }
-  var delay = 1500;
+  var delay = 1000;
   function connect(){
     var url = RELAYS[0] + topic + '/sse';
     var es;
     try{ es = new EventSource(url); }
-    catch(e){ setLiveStatus('off'); setTimeout(connect, delay); delay = Math.min(delay*2, 30000); return; }
-    es.onopen = function(){ setLiveStatus('live'); delay = 1500; };
-    es.onerror = function(){ setLiveStatus('polling'); es.close(); setTimeout(connect, delay); delay = Math.min(delay * 2, 30000); };
+    catch(e){ setLiveStatus('off'); setTimeout(connect, delay); delay = Math.min(delay*2, 10000); return; }
+    es.onopen = function(){ setLiveStatus('live'); delay = 1000; };
+    es.onerror = function(){ setLiveStatus('polling'); es.close(); setTimeout(connect, delay); delay = Math.min(delay * 2, 10000); };
     es.onmessage = function(ev){
       var env; try{ env = JSON.parse(ev.data); }catch(e){ return; }
       if(env.event !== 'message' || !env.message) return;
@@ -439,7 +445,7 @@ function catchUp(sinceTs){
     fetch(url, { headers:{ 'Accept':'application/x-ndjson' } })
       .then(function(r){ return r.text(); })
       .then(function(text){
-        if(!text.trim()){ return; }
+        if(!text.trim()){ lastPollSinceTs = pollTimestamp; return; }
         var added = false;
         text.split('\n').forEach(function(line){
           if(!line.trim()) return;
@@ -458,10 +464,11 @@ function catchUp(sinceTs){
 
 function resetPollTimer(){
   if(pollTimer) clearInterval(pollTimer);
-  var interval = sseOk ? POLL_INTERVAL_SSE_UP : POLL_INTERVAL_SSE_DOWN;
+  var interval = sseOk ? POLL_UP : POLL_DOWN;
   pollTimer = setInterval(function(){ catchUp(lastPollSinceTs); }, interval);
 }
 
+/* ═══════════ message handler ═══════════ */
 function handle(obj, quiet){
   if(!obj) return false;
   var age = Date.now() - (obj.ts || 0);
@@ -474,20 +481,21 @@ function handle(obj, quiet){
   }
   if(obj.t === 'type'){ if(!quiet && age < 6000) showTyping(obj.name); return false; }
   if(obj.t === 'hi'){
-    if(age < 16000){
+    if(age < PRESENCE_MS){
       peers.set(obj.pid, { name:obj.name, last:Date.now() });
       if(obj.pid !== me.pid && !greeted.has(obj.pid)){ greeted.add(obj.pid); publishObj({ t:'hi', pid:me.pid, name:me.name }); }
       renderPeople();
     }
     return false;
   }
-  if(obj.t === 'burn'){ if(age < 60000){ msgs = []; saveMsgs(); renderMessages(); toast('ROOM TORCHED BY YOUR BUDDY ??'); } return false; }
+  if(obj.t === 'burn'){ if(age < 60000){ msgs = []; saveMsgs(); renderMessages(); toast('ROOM TORCHED BY YOUR BUDDY 🔥'); } return false; }
   return false;
 }
 
+/* ═══════════ critical path ═══════════ */
 function gimmeLink(){
   var name = ($('inp-name').value || '').trim();
-  if(!name){ toast('TYPE A NAME FIRST ??'); return; }
+  if(!name){ toast('TYPE A NAME FIRST ✍️'); return; }
   room = rid(); me = { pid:ensurePID(), name:name }; ensureTopic();
   $('t-room').textContent = '#' + room;
   refreshTicketLink(); showView('ticket'); blip(660);
@@ -496,7 +504,7 @@ function gimmeLink(){
 }
 function whoSubmit(){
   var name = ($('inp-who').value || '').trim();
-  if(!name){ toast('TYPE A NAME FIRST ??'); return; }
+  if(!name){ toast('TYPE A NAME FIRST ✍️'); return; }
   me = { pid:ensurePID(), name:name }; storeSet('yap:name:' + room, name);
   enterChat(); blip(660);
 }
@@ -507,9 +515,20 @@ function enterChat(){
   msgs = loadMsgs(); renderMessages(); setupChannel();
   subscribe(); catchUp(0); resetPollTimer();
   publishObj({ t:'hi', pid:me.pid, name:me.name });
-  setInterval(function(){ publishObj({ t:'hi', pid:me.pid, name:me.name }); }, 8000);
+  setInterval(function(){ publishObj({ t:'hi', pid:me.pid, name:me.name }); }, HEARTBEAT_MS);
   setInterval(renderPeople, 4000);
   var inp = $('inp-msg'); if(inp) inp.focus();
+}
+
+/* wake-up sync: when tab returns from background, resync instantly */
+function setupVisibility(){
+  if(visSetup) return; visSetup = true;
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible' && room && me && !$('view-chat').hidden){
+      catchUp(lastPollSinceTs);
+      resetPollTimer();
+    }
+  });
 }
 
 function setupChannel(){
@@ -528,9 +547,10 @@ function onChannel(d){
   if(!d) return;
   if(d.type === 'message') receiveMessage(d.message);
   if(d.type === 'typing') showTyping(d.name);
-  if(d.type === 'burn'){ msgs = []; renderMessages(); toast('ROOM TORCHED ??'); }
+  if(d.type === 'burn'){ msgs = []; renderMessages(); toast('ROOM TORCHED 🔥'); }
 }
 
+/* ═══════════ send & receive ═══════════ */
 function sendClick(){
   var inp = $('inp-msg'); var text = (inp.value || '').trim(); if(!text) return;
   var r = $('btn-send').getBoundingClientRect(); burst(r.left + r.width/2, r.top);
@@ -551,7 +571,7 @@ var lastTypeTs = 0;
 function onType(){
   $('btn-send').classList.toggle('ready', !!$('inp-msg').value.trim());
   var n = Date.now();
-  if(n - lastTypeTs > 1500){
+  if(n - lastTypeTs > TYPE_MS){
     lastTypeTs = n;
     if(channel){ try{ channel.postMessage({ type:'typing', name:me.name }); }catch(e){} }
     publishObj({ t:'type', name:me.name });
@@ -566,10 +586,10 @@ function showTyping(name){
 }
 function renderPeople(){
   var now = Date.now();
-  var live = Array.from(peers.values()).filter(function(p){ return now - p.last < 18000; });
+  var live = Array.from(peers.values()).filter(function(p){ return now - p.last < PRESENCE_MS; });
   var el = $('ch-people');
-  if(live.length){ el.textContent = '?? ' + (live.length + 1) + ' in the zone — ' + live.map(function(p){ return p.name; }).join(', '); }
-  else { el.textContent = '?? just you — send the link!'; }
+  if(live.length){ el.textContent = '🟢 ' + (live.length + 1) + ' in the zone — ' + live.map(function(p){ return p.name; }).join(', '); }
+  else { el.textContent = '🟡 just you — send the link!'; }
 }
 function emojiInsert(btn){
   var inp = $('inp-msg'); var s = caret(inp), e = caretEnd(inp);
@@ -579,16 +599,17 @@ function emojiInsert(btn){
   $('btn-send').classList.add('ready');
 }
 
+/* ═══════════ images ═══════════ */
 function imgClick(){ var f = $('filePick'); f.value = ''; f.click(); }
 function onFileChange(){ var f = $('filePick'); if(f.files && f.files[0]) handleImage(f.files[0]); }
 function handleImage(file){
   compressImage(file).then(function(data){
-    if(!data){ toast('COULD NOT READ THAT PIC ??'); return; }
+    if(!data){ toast('COULD NOT READ THAT PIC 😬'); return; }
     var m = { id:uid(), pid:me.pid, name:me.name, kind:'img', data:data, ts:Date.now() };
-    if(JSON.stringify(m).length > MAXBODY){ toast('PIC TOO BIG EVEN AFTER SQUEEZE ???'); return; }
+    if(JSON.stringify(m).length > MAXBODY){ toast('PIC TOO BIG EVEN AFTER SQUEEZE 🖼️'); return; }
     var r = $('btn-send').getBoundingClientRect(); burst(r.left + r.width/2, r.top);
     msgs.push(m); saveMsgs(); appendOne(m); scrollBottom(true);
-    toast('SENDING PIC… ??');
+    toast('SENDING PIC… 📤');
     publishObj({ t:'msg', m:m }, function(){ blip(720); });
   });
 }
@@ -607,17 +628,18 @@ function compressImage(file){
   });
 }
 
+/* ═══════════ copy / nav ═══════════ */
 function copyLink(){
   var l = buildShareLink();
   if(!l){ toast('DEPLOY SITE FIRST TO GET A SHAREABLE LINK'); return; }
   function exec(){
     var t = document.createElement('textarea'); t.value = l; document.body.appendChild(t); t.select();
-    try{ document.execCommand('copy'); toast('LINK COPIED ??'); blip(880); }
-    catch(e){ toast('LONG-PRESS THE LINK TO COPY ??'); }
+    try{ document.execCommand('copy'); toast('LINK COPIED 📋'); blip(880); }
+    catch(e){ toast('LONG-PRESS THE LINK TO COPY 📋'); }
     kill(t);
   }
   if(navigator.clipboard && navigator.clipboard.writeText)
-    navigator.clipboard.writeText(l).then(function(){ toast('LINK COPIED ??'); blip(880); }, exec);
+    navigator.clipboard.writeText(l).then(function(){ toast('LINK COPIED 📋'); blip(880); }, exec);
   else exec();
 }
 function newRoom(){
@@ -626,16 +648,17 @@ function newRoom(){
 }
 function burnClick(b){
   if(!burnArmed){
-    burnArmed = true; b.textContent = 'SURE? ??'; b.classList.add('armed');
-    burnT = setTimeout(function(){ burnArmed = false; b.textContent = '?? BURN'; b.classList.remove('armed'); }, 2600);
+    burnArmed = true; b.textContent = 'SURE? 🔥'; b.classList.add('armed');
+    burnT = setTimeout(function(){ burnArmed = false; b.textContent = '🔥 BURN'; b.classList.remove('armed'); }, 2600);
   } else {
-    clearTimeout(burnT); burnArmed = false; b.textContent = '?? BURN'; b.classList.remove('armed');
+    clearTimeout(burnT); burnArmed = false; b.textContent = '🔥 BURN'; b.classList.remove('armed');
     msgs = []; saveMsgs(); renderMessages();
     if(channel){ try{ channel.postMessage({ type:'burn' }); }catch(e){} }
-    publishObj({ t:'burn', pid:me.pid }); toast('CHAT TORCHED ??');
+    publishObj({ t:'burn', pid:me.pid }); toast('CHAT TORCHED 🔥');
   }
 }
 
+/* ═══════════ rendering ═══════════ */
 function scrollBottom(smooth){
   var c = $('msgs'); if(!c) return;
   if(smooth) c.scrollTo({ top:c.scrollHeight, behavior:'smooth' });
@@ -650,7 +673,7 @@ function dayLabel(ts){
 function renderMessages(){
   var c = $('msgs'); c.innerHTML = '';
   if(!msgs.length){
-    c.innerHTML = '<div class="empty"><span class="big">??</span><h3>Silence is sus.</h3><p>First yap wins the crown ?? Send your link and watch it go LIVE.</p></div>';
+    c.innerHTML = '<div class="empty"><span class="big">👀</span><h3>Silence is sus.</h3><p>First yap wins the crown 👑 Send your link and watch it go LIVE.</p></div>';
     return;
   }
   var lastDay = '';
@@ -680,13 +703,14 @@ function appendOne(m, doScroll){
   if(doScroll !== false) c.scrollTop = c.scrollHeight;
 }
 
+/* ═══════════ boot ═══════════ */
 function boot(){
-  var MT = '? YAP! ? SEND PICS ? ONE LINK = ONE BESTIE ? NO ACCOUNTS ? LIVE ACROSS PHONES ? YOUR LINK REMEMBERS YOU ';
+  var MT = '★ YAP! ★ SEND PICS ★ ONE LINK = ONE BESTIE ★ NO ACCOUNTS ★ LIVE ACROSS PHONES ★ YOUR LINK REMEMBERS YOU ';
   ['mtrack','mtrack2'].forEach(function(id){
     var el = $(id); if(!el) return;
-    el.innerHTML = ('<span>' + MT.split('?').join('</span><span>?</span><span>') + '</span>').repeat(2);
+    el.innerHTML = ('<span>' + MT.split('★').join('</span><span>★</span><span>') + '</span>').repeat(2);
   });
-  var em = ['??','?','??','??','??','??','???','??','??','?','??','??','??','??'];
+  var em = ['💬','⚡','','🫶','🎉','💾','️','✏️','','⭐','🤪','💥','🌈','👾'];
   for(var i = 0; i < 14; i++){
     var d = document.createElement('span'); d.className = 'doodle';
     d.textContent = em[i % em.length];
@@ -697,7 +721,7 @@ function boot(){
     d.style.setProperty('--dl', (Math.random() * 4) + 's');
     document.body.appendChild(d);
   }
-  manualBase = storeGet('yap:manualBase') || '';
+  setupVisibility();
   var q = new URLSearchParams(window.location.search);
   room = q.get('room'); hostParam = q.get('host');
   if(!room){ showView('landing'); return; }
@@ -707,7 +731,7 @@ function boot(){
   else {
     showView('who');
     $('who-room').textContent = '#' + room;
-    if(hostParam) $('who-host').innerHTML = '<b>' + esc(hostParam) + '</b> opened this yap room and is waiting for you ??';
+    if(hostParam) $('who-host').innerHTML = '<b>' + esc(hostParam) + '</b> opened this yap room and is waiting for you 👀';
   }
 }
 boot();
